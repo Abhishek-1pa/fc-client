@@ -1,4 +1,4 @@
-import { PASSWORD, TOKEN, USERNAME } from '@/constants/names';
+import { PASSWORD, REFRESH_TOKEN, TOKEN, USERNAME } from '@/constants/names';
 import { AuthState } from '@/models/states/authState';
 import iamsecure from '@/services/iamSecure';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -62,6 +62,7 @@ export const authSlice = createSlice({
                 state.error = null;
                 state.user = action.payload;
                 localStorage.setItem(TOKEN, action.payload.token); // Use localStorage directly
+                localStorage.setItem(REFRESH_TOKEN, action.payload.refresh_token);
             })
             .addCase(login.rejected, (state, action) => {
                 state.loading = false;

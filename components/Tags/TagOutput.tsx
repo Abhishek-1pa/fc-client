@@ -1,8 +1,10 @@
+import { BlogGetData } from '@/models/BlogGet'
 import { BlogPostData } from '@/models/BlogPost'
 import { Stack, Chip, Typography } from '@mui/material'
-import React from 'react'
+import React, { useEffect } from 'react'
 
-const TagOutput = ({blog}:{blog:BlogPostData}) => {
+const TagOutput = ({blog}:{blog:BlogGetData}) => {
+
   return (
     
     <div>
@@ -20,7 +22,7 @@ const TagOutput = ({blog}:{blog:BlogPostData}) => {
               key={tag.id}
               label={
                 <Typography variant="subtitle1">
-                  {tag.name}
+                  {tag.text}
                 </Typography>
               }
               variant="outlined"

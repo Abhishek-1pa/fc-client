@@ -1,23 +1,21 @@
 // components/Navbar.js
-import { AuthState } from "@/redux/authSlice";
+import { AuthState } from "@/models/states/authState";
 import { RootState } from "@/redux/store";
 import {
   AppBar,
-  Toolbar,
-  Button,
-  Typography,
-  styled,
-  Stack,
   Box,
+  Button,
+  Stack,
+  Typography,
+  styled
 } from "@mui/material";
 import Link from "next/link";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import AccountMenu from "./AccountMenu";
 
 const navItems = [
   { path: "/", label: "Home" },
-  { path: "/blog", label: "Blog" },
+  // { path: "/blog", label: "Blog" },
   { path: "/about", label: "About" },
 ];
 

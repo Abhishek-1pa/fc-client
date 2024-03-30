@@ -1,15 +1,16 @@
+import TagInput from "@/components/Tags/TagInput";
+import ThumbnailUploader from "@/components/ThumbnailUploader/ThumbnailUploader";
+import { TOKEN } from "@/constants/names";
+import { BlogPostData } from "@/models/BlogPost";
+import { createBlog } from "@/redux/blogs/blogsCreateSlice";
+import store from "@/redux/store";
+import { OutputData } from "@editorjs/editorjs";
+import { Button, Stack, TextField } from "@mui/material";
+import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useEffect, useState, ChangeEvent } from "react";
-import { Box, Button, Stack, TextField } from "@mui/material";
-import TagInput from "@/components/Tags/TagInput";
-import { TOKEN } from "@/constants/names";
-import type { NextPage } from "next";
-import { OutputData } from "@editorjs/editorjs";
-import { BlogPostData } from "@/models/BlogPost";
-import store from "@/redux/store";
-import { Tag } from "@/models/Tag";
-import { createBlog } from "@/redux/blogs/blogsCreateSlice";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Tag } from "react-tag-input";
 
 const EditorBlock = dynamic(() => import("@/components/Editor/Editor"), {
   ssr: false,
@@ -22,17 +23,21 @@ const Home: NextPage = () => {
   const [formData, setFormData] = useState<BlogPostData>({
     title: "",
     content: {
-      blocks: []
+      blocks: [],
     },
     tags: [],
+    thumbnail_id: 0
   });
-  
+
   // Check for token on page load
   useEffect(() => {
     const token = localStorage.getItem(TOKEN);
     if (!token) router.push("/login");
   }, []);
 
+  // useEffect(() => {
+  //   console.log(formData);
+  // }, [formData]);
   // Handle title change event
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, title: event.target.value });
@@ -40,16 +45,51 @@ const Home: NextPage = () => {
 
   // Handle saving editor data
   const handleSave = () => {
-    console.log(formData); // Save or send data to backend
-    store.dispatch(createBlog(formData)).then((response)=>console.log(response)).catch((error)=>console.log(error));
+    console.log(formData); // Log the current form data
+
+    // Map the tags to extract only the 'text' property
+    const updatedTags = formData.tags.map((tag) => tag.text);
+
+    let uploadData: BlogPostData = {
+      title: formData.title,
+      content: formData.content,
+      tags: updatedTags,
+      thumbnail_id: formData.thumbnail_id
+    };
+
+    console.log(uploadData);
+
+    // Dispatch the createBlog action when the save button is clicked
+    store
+      .dispatch(createBlog(uploadData))
+      .then((response) => {
+        console.log(response); // Log the response if dispatch is successful
+      })
+      .catch((error) => {
+        console.log(error); // Log any errors encountered during dispatch
+      });
   };
 
   // Handle editor data change
   const handleEditorDataChange = (data: OutputData) => {
-    setFormData((prevData)=>({
+    setFormData((prevData) => ({
       ...prevData,
-      content:data
+      content: data,
     }));
+  };
+
+  const appendEditorData = (data: OutputData): OutputData => {
+    const updatedContent: OutputData = {
+      ...formData.content,
+      blocks: [...formData.content.blocks, ...data.blocks],
+    };
+
+    setFormData((prev) => ({
+      ...prev,
+      content: updatedContent,
+    }));
+
+    return updatedContent;
   };
 
   // Handle tag change
@@ -57,44 +97,63 @@ const Home: NextPage = () => {
     setFormData({ ...formData, tags });
   };
 
-  const styles ={
+
+  const styles = {
     "& .MuiInputLabel-root": { color: "black" }, // Color for label
-    "& .MuiOutlinedInput-root": { // Style for entire input field
+    "& .MuiOutlinedInput-root": {
+      // Style for entire input field
       "&.Mui-focused fieldset": { borderColor: "black" }, // Focused state border color
       "& .MuiInputBase-input": { color: "black" }, // Color for input text
     },
-  }
+  };
+
+  const handleImageChange = (index: number) => {
+    setFormData((prev)=>({
+      ...prev,
+      thumbnail_id: index
+    }))
+
+    console.log(index);
+
+
+
+  };
 
   return (
     <>
-      <Stack  spacing={2} width={"80%"} margin={"auto"}>
-  
-          <TextField
-            fullWidth
-            size="small"
-            sx={ styles }
-            label="Title"
-            value={formData.title}
-            onChange={handleTitleChange}
-          />
-
-      <Stack direction="row" width="100%" justifyContent="space-around">
-        <EditorBlock
-          data={formData.content}
-          onChange={handleEditorDataChange}
-          holder="editorjs-container"
-          
-          maxWidth="100%"
+      <Stack spacing={2} width={"80%"} margin={"auto"}>
+        <TextField
+          fullWidth
+          size="small"
+          sx={styles}
+          label="Title"
+          value={formData.title}
+          onChange={handleTitleChange}
         />
-      </Stack>
-      <TagInput handleTagChange={handleTagChange} selectedTags={formData.tags} />
-      <Stack alignItems="center">
-        <Button onClick={handleSave}>Save</Button>
-      </Stack>
+
+        <Stack direction="row" width="100%" justifyContent="space-around">
+          <EditorBlock
+            data={formData.content}
+            onChange={handleEditorDataChange}
+            append={appendEditorData}
+            holder="editorjs-container"
+            maxWidth="100%"
+          />
+        </Stack>
+        <Stack direction={"row"} justifyContent={"space-between"}>
+        <TagInput
+          handleTagChange={handleTagChange}
+          selectedTags={formData.tags}
+        />
+        </Stack>
+        <ThumbnailUploader handleImageChange={handleImageChange} thumbnail_id={formData.thumbnail_id}/>
+        
+        <Stack alignItems="center">
+          <Button onClick={handleSave}>Save</Button>
+        </Stack>
       </Stack>
     </>
   );
 };
-
 
 export default Home;

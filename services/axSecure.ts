@@ -1,5 +1,5 @@
-import { BASE_URL } from "@/constants/endpoints";
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { REFRESH_TOKEN, TOKEN } from "@/constants/names";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 export  class AxSecure {
     instance;
@@ -8,7 +8,7 @@ export  class AxSecure {
   
       this.instance = axios.create({
         baseURL: baseUrl,
-        timeout: 5000,
+        // timeout: 5000,
         headers: {
           "Content-Type": "application/json",
         },
@@ -17,18 +17,18 @@ export  class AxSecure {
       this.setupInterceptors();
     }
   
+
     setupInterceptors() {
       this.instance.interceptors.request.use(
-        (config) => {
-          if(typeof window != "undefined"){
-            const token = localStorage.getItem("token");
+        async (config) => {
+          if (typeof window !== 'undefined' && window.localStorage) {
+            const token = localStorage.getItem(TOKEN);
             if (token) {
               config.headers.Authorization = `Bearer ${token}`;
+            } else {
+              await this.refreshToken(config);
             }
-
           }
-
-  
           return config;
         },
         (error) => {
@@ -40,13 +40,61 @@ export  class AxSecure {
         (response) => {
           return response;
         },
-        (error) => {
-          console.log(error);
-
+        async (error: AxiosError) => {
+          console.log("found some error")
+          if (error.response && error.response.status === 401) {
+              // Refresh token and retry request
+              try {
+                  const refreshedConfig = await this.refreshToken(error.config);
+                  if (refreshedConfig) {
+                      return this.instance(refreshedConfig); // Retry the request with the refreshed token
+                  }
+              } catch (error) {
+                  console.error("Error refreshing token and retrying request:", error);
+              }
+          }
           return Promise.reject(error);
-        }
+      }
       );
     }
+  
+
+    async refreshToken(config?: AxiosRequestConfig): Promise<AxiosRequestConfig | undefined> {
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN);
+
+      if (!refreshToken) {
+          console.log("Refresh token not found in localStorage. Unable to refresh.");
+          return undefined; // Indicate failure or throw an error if critical
+      }
+
+      console.log("Refreshing token...");
+
+      try {
+          const refreshConf: AxiosRequestConfig = {
+              headers: {
+                  Authorization: `Bearer ${refreshToken}`,
+              },
+          };
+
+          const response = await axios.post("http://localhost:8001/refresh_token", {}, refreshConf);
+
+          const { token, refresh_token } = response.data;
+          localStorage.setItem(TOKEN, token);
+          localStorage.setItem(REFRESH_TOKEN, refresh_token);
+
+          if (config && config.headers) {
+              config.headers.Authorization = `Bearer ${token}`;
+              return config;
+          }
+
+          return undefined; // Return undefined to indicate that the original request should not be retried
+      } catch (error) {
+          console.error("Error refreshing token:", error);
+          return undefined; // Indicate refresh failure (consider retry or notify user)
+      }
+  }
+
+    
   
     get(url: string, config?: AxiosRequestConfig<any> | undefined) {
       return this.instance.get(url, config);
@@ -63,9 +111,29 @@ export  class AxSecure {
       
       return this.instance.post(url, data, updatedConfig);
     }
+
+    put(url:string, data?:any, config?:{headers:any;}){
+      const contentType = 
+        data instanceof FormData ? "multipart/form-data":"application/json";
+        const headers = {
+          ...(config?.headers || {}),
+          "Content-Type":contentType,
+
+        };
+        const updatedConfig = {...config, headers};
+        return this.instance.put(url, data, updatedConfig);
+    }
+
+    delete(url:string, data?:any, config?:{headers:any;}){
+      const contentType = 
+        data instanceof FormData ? "multipart/form-data":"application/json";
+        const headers = {
+          ...(config?.headers || {}),
+          "Content-Type":contentType,
+
+        };
+        const updatedConfig = {...config, headers};
+        return this.instance.delete(url, updatedConfig);
+    }
 }
-  
-  // const axsecure = new AxSecure();
-  
-  // export default axsecure;
   

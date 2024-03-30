@@ -1,4 +1,6 @@
-import { BlogPostData } from "@/models/BlogPost";
+import { BlogGetData } from "@/models/BlogGet";
+import { dislike, like } from "@/redux/blogs/blogFetchSlice";
+import store, { RootState } from "@/redux/store";
 import { ChatBubbleOutline, ThumbDown, ThumbUp } from "@mui/icons-material";
 import {
   Box,
@@ -7,16 +9,29 @@ import {
   Typography,
   styled
 } from "@mui/material";
+import { useSelector } from "react-redux";
 import EditorJsRenderer from "../EditorJsRenderer/EditorJsRenderer";
 import TagOutput from "../Tags/TagOutput";
 
-const BlogRenderer = ({ blog }: { blog: BlogPostData | null }) => {
+const BlogRenderer = () => {
+  const blog : BlogGetData | null = useSelector((state: RootState)=>state.fetch_all_blogs.current_blog);
   const handleLike = () => {
     // Implement like functionality
+    // console.log("user liked the blog");
+    if( blog && blog.id){
+      store.dispatch(like(blog?.id));
+      
+    }
   };
+
+
 
   const handleDislike = () => {
     // Implement dislike functionality
+    // console.log("user disliked the blog");
+    if( blog && blog.id ){
+      store.dispatch(dislike(blog.id));
+    }
   };
 
   const handleComment = () => {
@@ -32,7 +47,7 @@ const BlogRenderer = ({ blog }: { blog: BlogPostData | null }) => {
   }));
 
   return (
-    <Box textAlign="center" marginTop={-1}>
+    <Box marginTop={-1}>
       {blog ? (
         <Stack direction="row">
           <Stack
@@ -41,7 +56,7 @@ const BlogRenderer = ({ blog }: { blog: BlogPostData | null }) => {
             marginY={10}
             marginX={1}
           >
-            <Stack spacing={1}>
+            <Stack spacing={1} textAlign={"center"}>
               <StyledIconButton
                 onClick={handleLike}
                 sx={{ color: "rgb(6,95,212)" }}
@@ -71,20 +86,28 @@ const BlogRenderer = ({ blog }: { blog: BlogPostData | null }) => {
 
           {/* Blog content */}
           <Stack spacing={2}>
+     
             <Stack
               direction="row"
-              justifyContent="space-around"
+              justifyContent="space-evenly"
               alignItems="center"
-              width={"100%"}
+              // width={"100%"}
+              width={"calc(100vw - 250px)"}
               sx={{ position: "fixed", backgroundColor: "#ffff" }}
             >
-              <h1>{blog.title}</h1>
+              <h1  style={{ backgroundImage: `/images/im${blog.thumbnail_id + 1}.png` }}>{blog.title}</h1>
+
               <TagOutput blog={blog} />
             </Stack>
             <div style={{ marginTop: 100, marginLeft: 60, marginRight: 40 }}>
+    
 
               <EditorJsRenderer data={blog.content} />
+
             </div>
+            <Stack>
+              
+            </Stack>
           </Stack>
 
         </Stack>

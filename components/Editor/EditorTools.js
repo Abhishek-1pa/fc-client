@@ -37,9 +37,8 @@ export const EDITOR_TOOLS = {
           const formData = new FormData();
           formData.append("filename", file);
 
-          // Return the Promise directly
           return axios
-            .post("http://localhost:8002/blogs/uploadFile", formData, {
+            .post("https://blog.forge-code.com/blogs/uploadFile", formData, {
               headers,
             })
             .then((response) => {
@@ -47,7 +46,7 @@ export const EDITOR_TOOLS = {
               return {
                 success: 1,
                 file: {
-                  url: `http://localhost:8002/blogs/image/${response.data.img_id}`,
+                  url: `https://blog.forge-code.com/blogs/image/${response.data.img_id}`,
                 },
               };
             })
@@ -57,6 +56,27 @@ export const EDITOR_TOOLS = {
                 success: 0,
               };
             });
+
+          // Return the Promise directly
+          // return axios
+          //   .post("http://localhost:8002/blogs/uploadFile", formData, {
+          //     headers,
+          //   })
+          //   .then((response) => {
+          //     console.log(response);
+          //     return {
+          //       success: 1,
+          //       file: {
+          //         url: `http://localhost:8002/blogs/image/${response.data.img_id}`,
+          //       },
+          //     };
+          //   })
+          //   .catch((error) => {
+          //     console.log(error);
+          //     return {
+          //       success: 0,
+          //     };
+          //   });
         },
       },
     },

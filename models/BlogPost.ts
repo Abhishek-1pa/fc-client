@@ -1,6 +1,5 @@
 import { OutputData } from "@editorjs/editorjs";
-import { Tag } from "./Tag";
-
+import { Tag } from "react-tag-input";
 // models/BlogPost.ts
 export interface BlogPostData {
   id?:number;
@@ -8,11 +7,11 @@ export interface BlogPostData {
   content: OutputData;
   author?: string;
   published_at?: string;
-  tags: Tag[];
-  image?: File; // Image file for the blog post
+  tags: any[];
   views?: number;
   likes?: number;
   dislikes?:number;
   comments?: string[];
+  thumbnail_id:number;
 }
 
