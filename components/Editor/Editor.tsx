@@ -1,15 +1,15 @@
 //./components/Editor
 import React, { ChangeEvent, memo, useEffect, useRef, useState } from "react";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
-import { EDITOR_TOOLS } from "./EditorTools";
 import { Button, Stack, TextField } from "@mui/material";
 import llmsecure from "@/services/llmSecure";
+import { EDITOR_TOOLS } from "./EditorTools";
 
 //props
 type Props = {
   data?: OutputData;
   onChange(val: OutputData): void;
-  append(val:OutputData):OutputData;
+  append?(val:OutputData):OutputData;
   holder: string;
   maxWidth?:string;
 };
@@ -25,6 +25,7 @@ const EditorBlock = ({ data, onChange, append,  holder, maxWidth }: Props) => {
       const editor = new EditorJS({
         holder: holder,
         minHeight:200,
+        //@ts-ignore
         tools: EDITOR_TOOLS,
         data,
         async onChange(api, event) {
@@ -49,27 +50,25 @@ const EditorBlock = ({ data, onChange, append,  holder, maxWidth }: Props) => {
   }, []);
 
   const handleGenerateClick = async () => {
-
     try {
       console.log(prompt);
       const response = await llmsecure.post("/llm/generate", { prompt });
       console.log(response.data);
-      let new_content : OutputData = response.data;
-      let x : OutputData= append(new_content);
-      if (ref.current && new_content) {
-       
+      const newContent: OutputData = response.data;
+      
+      // Check if 'append' function is defined before calling it
+      if (append && newContent) {
+        const x: OutputData = append(newContent);
+        if (ref.current) {
           ref.current.blocks.render(x);
-        
-
+        }
       }
-  
     } catch (error) {
       console.log(error);
       // Handle error here
     }
-
   };
-
+  
   const handlePromptChange = (event: ChangeEvent<HTMLInputElement>) =>{
     setPrompt(event.target.value);
   }

@@ -1,3 +1,4 @@
+"use client";
 import TagInput from "@/components/Tags/TagInput";
 import ThumbnailUploader from "@/components/ThumbnailUploader/ThumbnailUploader";
 import { TOKEN } from "@/constants/names";
@@ -9,67 +10,74 @@ import { Button, Stack, TextField } from "@mui/material";
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Tag } from "react-tag-input";
 
-const EditorBlock = dynamic(() => import("@/components/Editor/Editor"), {
-  ssr: false,
-});
+// const EditorBlock = dynamic(() => import("@/components/Editor/Editor"), {
+//   ssr: false,
+// });
+
+const CustomEditor = dynamic(
+  () => {
+    return import("@/components/Editor/ckeditor");
+  },
+  { ssr: false }
+);
 
 const Edit: NextPage = () => {
   const router = useRouter();
-  const currentBlog = useSelector((state: RootState)=>state.fetch_all_blogs.current_blog);
-
+  const currentBlog = useSelector((state : RootState)=>state.fetch_all_blogs.current_blog)
   // Initialize state values
   const [formData, setFormData] = useState<BlogPostData>({
-    title: currentBlog?.title ?? '',
-    content: currentBlog?.content ?? {
-        blocks:[]
-    },
-    tags: currentBlog?.tags ?? [],
-    thumbnail_id: currentBlog?.thumbnail_id ?? 1
+    title: currentBlog?.title|| "",
+    content: currentBlog?.content || "",
+    tags: currentBlog?.tags || [],
+    thumbnail_id: currentBlog?.thumbnail_id || 0,
   });
+
+  const editorRef = useRef(null);
+
   // Check for token on page load
   useEffect(() => {
     const token = localStorage.getItem(TOKEN);
     if (!token) router.push("/login");
   }, []);
 
-  // useEffect(() => {
-  //   console.log(formData);
-  // }, [formData]);
-  // Handle title change event
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, title: event.target.value });
   };
 
   // Handle saving editor data
-  const handleUpdate = () => {
-    // console.log(formData); // Log the current form data
+  const handleSave = () => {
+    console.log(formData); // Log the current form data
 
     // Map the tags to extract only the 'text' property
     const updatedTags = formData.tags.map((tag) => tag.text);
 
     let uploadData: BlogPostData = {
-        id: currentBlog?.id,
+      id:currentBlog?.id,
       title: formData.title,
       content: formData.content,
       tags: updatedTags,
-      thumbnail_id: formData.thumbnail_id
+      thumbnail_id: formData.thumbnail_id,
     };
 
-    // console.log(uploadData);
+    console.log(uploadData);
 
     // Dispatch the createBlog action when the save button is clicked
     store
-      .dispatch(updateBlog(uploadData)).then(resp=>{
-        router.push("/");
+      .dispatch(updateBlog(uploadData))
+      .then((response) => {
+        console.log(response); // Log the response if dispatch is successful
+      })
+      .catch((error) => {
+        console.log(error); // Log any errors encountered during dispatch
       });
   };
 
   // Handle editor data change
-  const handleEditorDataChange = (data: OutputData) => {
+  const handleEditorDataChange = (data: string) => {
     setFormData((prevData) => ({
       ...prevData,
       content: data,
@@ -95,7 +103,6 @@ const Edit: NextPage = () => {
     setFormData({ ...formData, tags });
   };
 
-
   const styles = {
     "& .MuiInputLabel-root": { color: "black" }, // Color for label
     "& .MuiOutlinedInput-root": {
@@ -106,15 +113,12 @@ const Edit: NextPage = () => {
   };
 
   const handleImageChange = (index: number) => {
-    setFormData((prev)=>({
+    setFormData((prev) => ({
       ...prev,
-      thumbnail_id: index
-    }))
+      thumbnail_id: index,
+    }));
 
-    // console.log(index);
-
-
-
+    console.log(index);
   };
 
   return (
@@ -128,26 +132,24 @@ const Edit: NextPage = () => {
           value={formData.title}
           onChange={handleTitleChange}
         />
+        <CustomEditor
+          updateContent={handleEditorDataChange}
+          initialData={formData.content}
+        />
 
-        <Stack direction="row" width="100%" justifyContent="space-around">
-          <EditorBlock
-            data={formData.content}
-            onChange={handleEditorDataChange}
-            append={appendEditorData}
-            holder="editorjs-container"
-            maxWidth="100%"
+        <Stack direction={"row"} justifyContent={"space-between"}>
+          <TagInput
+            handleTagChange={handleTagChange}
+            selectedTags={formData.tags}
           />
         </Stack>
-        <Stack direction={"row"} justifyContent={"space-between"}>
-        <TagInput
-          handleTagChange={handleTagChange}
-          selectedTags={formData.tags}
+        <ThumbnailUploader
+          handleImageChange={handleImageChange}
+          thumbnail_id={formData.thumbnail_id}
         />
-        </Stack>
-        <ThumbnailUploader handleImageChange={handleImageChange} thumbnail_id={formData.thumbnail_id}/>
-        
+
         <Stack alignItems="center">
-          <Button onClick={handleUpdate}>Update</Button>
+          <Button onClick={handleSave}>Save</Button>
         </Stack>
       </Stack>
     </>

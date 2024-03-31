@@ -5,7 +5,7 @@ export interface BlogGetData {
     thumbnail_id: number;
     id?:number;
     title: string;
-    content: OutputData;
+    content: any;
     author?: string;
     published_at?: string;
     tags: Tag[];

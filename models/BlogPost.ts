@@ -4,7 +4,7 @@ import { Tag } from "react-tag-input";
 export interface BlogPostData {
   id?:number;
   title: string;
-  content: OutputData;
+  content: any;
   author?: string;
   published_at?: string;
   tags: any[];
