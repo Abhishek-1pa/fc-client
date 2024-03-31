@@ -10,16 +10,16 @@ const KeyCodes = {
 };
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
-const TagInput = ({ handleTagChange, selectedTags }: any) => {
+const TagInput = ({ handleTagChange, selectedTags }) => {
   const [tags, setTags] = useState(selectedTags );
 
-  const handleDelete = (i: number) => {
-    const updatedTags = tags.filter((tag: any, index: number) => index !== i);
+  const handleDelete = (i) => {
+    const updatedTags = tags.filter((tag, index) => index !== i);
     setTags(updatedTags);
     handleTagChange(updatedTags); // Pass updatedTags to handleTagChange
   };
 
-  const handleAddition = (tag: { id: string; text: string; }) => {
+  const handleAddition = (tag) => {
     
     const updatedTags = [...tags, tag];
     setTags(updatedTags);
@@ -27,9 +27,9 @@ const TagInput = ({ handleTagChange, selectedTags }: any) => {
   };
 
   const handleDrag = (
-    tag: { id: string; text: string },
-    currPos: number,
-    newPos: number
+    tag,
+    currPos,
+    newPos
   ) => {
     const newTags = tags.slice();
     newTags.splice(currPos, 1);
@@ -38,7 +38,7 @@ const TagInput = ({ handleTagChange, selectedTags }: any) => {
     handleTagChange(newTags); // Pass newTags to handleTagChange
   };
 
-  const handleTagClick = (index: any) => {
+  const handleTagClick = (index) => {
     console.log("The tag at index " + index + " was clicked");
   };
 
