@@ -14,7 +14,7 @@ function Blog(){
             router.push('/login');
 
 
-    },[])
+    },[router])
 
 
     return <>

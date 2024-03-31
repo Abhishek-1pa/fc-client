@@ -1,8 +1,8 @@
-import { AuthState, logout } from '@/redux/authSlice';
+import { AuthState } from '@/models/states/authState';
+import { logout } from '@/redux/authSlice';
 import store, { RootState } from '@/redux/store';
-import { Logout } from '@mui/icons-material';
-import { Box, Tooltip, IconButton, Menu, MenuItem, ListItemIcon, Avatar, Paper, Button } from '@mui/material';
-import React, { ReactHTMLElement, useState } from 'react';
+import { Button, Menu, MenuItem } from '@mui/material';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 const AccountMenu = () => {

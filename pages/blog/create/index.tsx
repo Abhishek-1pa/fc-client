@@ -41,7 +41,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     const token = localStorage.getItem(TOKEN);
     if (!token) router.push("/login");
-  }, []);
+  }, [router]);
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, title: event.target.value });

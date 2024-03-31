@@ -3,7 +3,6 @@ import { dislike, like } from "@/redux/blogs/blogFetchSlice";
 import store, { RootState } from "@/redux/store";
 import { ChatBubbleOutline, ThumbDown, ThumbUp } from "@mui/icons-material";
 import { Box, IconButton, Stack, Typography, styled } from "@mui/material";
-import dynamic from "next/dynamic";
 import { useSelector } from "react-redux";
 import TagOutput from "../Tags/TagOutput";
 import "./styles.css";
