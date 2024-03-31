@@ -24,9 +24,6 @@ const editorConfiguration = {
 		'codeBlock',
 		'code'
     ],
-	ckfinder: {
-        uploadUrl: 'http://localhost:8002/uploadFile' // Specify your upload URL here
-    },
 	extraPlugins: [MyCustomUploadAdapterPlugin]
 };
 

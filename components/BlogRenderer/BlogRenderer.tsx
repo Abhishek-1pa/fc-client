@@ -45,7 +45,7 @@ const BlogRenderer = () => {
           <Stack
             spacing={2}
             sx={{ position: "fixed" }}
-            marginY={10}
+            marginY={15}
             marginX={1}
           >
             <Stack spacing={1} textAlign={"center"}>

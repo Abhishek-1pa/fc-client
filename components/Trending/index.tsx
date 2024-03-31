@@ -33,10 +33,10 @@ const trendingData = [
   }
 ];
 return (
-  <Stack sx={{ position: "fixed", marginTop: "40px", backgroundColor: "azure", height: "100%", maxWidth: "250px" }} spacing={2}>
+  <Stack sx={{ position: "fixed", marginTop: "50px", backgroundColor: "azure", height: "100%", maxWidth: "250px" }} spacing={2}>
     <Typography variant="h6" align="center">Trending Blogs</Typography>
     {trendingData.map(blog => (
-      <div key={blog.id}>
+      <div key={blog.id} style={{margin:"5px"}}>
         {/* Use Link component to make the title clickable */}
         <Link href="#" color="primary" underline="hover" sx={{ fontWeight: 'bold' }}>{blog.title}</Link>
       </div>
