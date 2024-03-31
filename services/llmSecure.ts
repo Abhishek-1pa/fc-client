@@ -2,8 +2,7 @@ import { AxSecure } from "./axSecure";
 
 class LLMSecure extends AxSecure{
     constructor(){
-        // super("http://localhost:8003")
-        super("https://llm.forge-code.com");
+        super(process.env.NEXT_PUBLIC_LLM_URL || '');
     }
 }
 

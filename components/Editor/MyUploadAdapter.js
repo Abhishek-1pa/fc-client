@@ -18,7 +18,7 @@ class MyUploadAdapter {
               console.log(response);
 
               if (response.data && response.data.img_id) {
-                const imgUrl = `http://localhost:8002/blogs/image/${response.data.img_id}`;
+                const imgUrl = `${process.env.NEXT_PUBLIC_BLOG_URL}/blogs/image/${response.data.img_id}`;
                 resolve({ default: imgUrl });
               } else {
                 console.log(1);

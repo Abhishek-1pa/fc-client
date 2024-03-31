@@ -2,8 +2,7 @@ import { AxSecure } from "./axSecure";
 
 class IamSecure extends AxSecure{
     constructor(){
-        super("http://localhost:8001");
-        // super("https://iam.forge-code.com")
+        super(process.env.NEXT_PUBLIC_IAM_URL || '');
     }
 
 }
