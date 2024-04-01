@@ -77,7 +77,7 @@ const BlogRenderer = () => {
           </Stack>
 
           {/* Blog content */}
-          <Stack spacing={2}>
+          <Stack spacing={2} maxWidth={"100%"}>
             <Stack
               direction="row"
               justifyContent="space-evenly"
@@ -97,22 +97,31 @@ const BlogRenderer = () => {
               <TagOutput blog={blog} />
             </Stack>
             <div style={{ marginTop: 100, marginLeft: 60, marginRight: 40 }}>
-              {/* <CKEditor 
-            editor={null}
-            data={blog.content}/>               */}
               <div
                 style={{
                   marginTop: "20px",
-                  fontFamily: "Arial, sans-serif", // Example font family
-                  fontSize: "16px", // Example font size
-                  color: "#333", // Example text color
-                  lineHeight: "1.6", // Example line height
-                  backgroundColor: "white", // Example background color
-                  padding: "10px", // Example padding
+                  fontFamily: "Arial, sans-serif",
+                  fontSize: "16px",
+                  color: "#333",
+                  lineHeight: "1.6",
+                  backgroundColor: "white",
+                  padding: "10px",
                 }}
-                dangerouslySetInnerHTML={{ __html: blog.content || "" }}
+                dangerouslySetInnerHTML={{
+                  __html: `
+        <style>
+          img {
+            max-width: 100%;
+            width:auto;
+            height:auto
+          }
+        </style>
+        ${blog.content || ""}
+      `,
+                }}
               />
             </div>
+
             {/* <CustomEditor initialData={blog.content} /> */}
 
             {/* <EditorJsRenderer data={blog.content} /> */}

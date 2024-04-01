@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Editor/EditorTools.js", "components/Editor/index.js", "pages/blog/create/index.tsx", "components/Editor/editor.jsx", "components/Editor/hooks.js", "components/Editor/options.js", "components/Editor/tools.js", "components/Editor/custom-editor.js", "components/Editor/ckeditor.jsx", "components/Editor/MyUploadAdapter.js", "components/Editor/MyUploadAdapter.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Editor/EditorTools.js", "components/Editor/index.js", "pages/blog/create/index.tsx", "components/Editor/editor.jsx", "components/Editor/hooks.js", "components/Editor/options.js", "components/Editor/tools.js", "components/Editor/custom-editor.js", "components/Editor/ckeditor.jsx", "components/Editor/MyUploadAdapter.js", "components/Editor/MyUploadAdapter.js", "components/Tags/TagInput.jsx"],
   "exclude": ["node_modules"]
 }
