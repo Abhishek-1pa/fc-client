@@ -25,7 +25,6 @@ const BlogPost = () => {
     const currentBlog = fetchBlogBySlug(slug);
     store.dispatch(setCurrentBlog(currentBlog));
 
-
   },[slug]);
   
 
