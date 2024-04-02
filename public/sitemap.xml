@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://forge-code.com/</loc>
+  </url>
+
+  <url>
+    <loc>https://forge-code.com/about</loc>
+  </url>
+
+  <url>
+    <loc>https://forge-code.com/blog</loc>
+  </url>
+
+  <url>
+    <loc>https://forge-code.com/blog/[slug].tsx</loc>  </url>
+
+  <url>
+    <loc>https://forge-code.com/docs</loc>
+  </url>
+
+  <url>
+    <loc>https://forge-code.com/docs/[...params].tsx</loc>  </url>
+
+  <url>
+    <loc>https://forge-code.com/login</loc>
+  </url>
+
+  <url>
+    <loc>https://forge-code.com/register</loc>
+  </url>
+
+  </urlset>
